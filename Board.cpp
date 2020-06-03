@@ -24,7 +24,7 @@ void Board::move(uint player_number, std::pair<int, int> source, MoveDIR directi
   switch (direction)
   {
   case MoveDIR::Up:
-    if (!board[source.first + 1][source.second])
+    if ((source.first + 1 < board.size()) && (!board[source.first + 1][source.second]))
     {
       board[source.first + 1][source.second] = board[source.first][source.second];
       board[source.first][source.second] = nullptr;
@@ -33,16 +33,16 @@ void Board::move(uint player_number, std::pair<int, int> source, MoveDIR directi
 
     break;
   case MoveDIR::Down:
-    if (!board[source.first - 1][source.second])
+    if ((source.first - 1 >= 0) && (!board[source.first - 1][source.second]))
     {
       board[source.first - 1][source.second] = board[source.first][source.second];
       board[source.first][source.second] = nullptr;
-      shoot({source.first - 1,source.second},player_number);
+      shoot({source.first - 1, source.second}, player_number);
     }
     break;
 
   case MoveDIR::Right:
-    if (!board[source.first][source.second + 1])
+    if ((source.second + 1 < board.size()) && (!board[source.first][source.second + 1]))
     {
       board[source.first][source.second + 1] = board[source.first][source.second];
       board[source.first][source.second] = nullptr;
@@ -51,7 +51,7 @@ void Board::move(uint player_number, std::pair<int, int> source, MoveDIR directi
 
     break;
   case MoveDIR::Left:
-    if (!board[source.first][source.second - 1])
+    if ((source.second - 1 >= 0) && (!board[source.first][source.second - 1]))
     {
       board[source.first][source.second - 1] = board[source.first][source.second];
       board[source.first][source.second] = nullptr;
@@ -63,7 +63,7 @@ void Board::move(uint player_number, std::pair<int, int> source, MoveDIR directi
   return;
 }
 
-// returns true iff the board contains one or more soldiers of the given player.
+// returns true if the board contains one or more soldiers of the given player.
 bool Board::has_soldiers(uint player_number) const
 {
   for (size_t i = 0; i < board.size(); i++)
@@ -107,7 +107,7 @@ Soldier &Board ::getTarget(int i1, int j1, int player)
 }
 void Board ::shoot(std::pair<int, int> source, int player)
 {
-  Soldier* target = &Board::getTarget(source.first, source.second,player);
+  Soldier *target = &Board::getTarget(source.first, source.second, player);
   target->setH(target->pointHealth - board[source.first][source.second]->pointDamage);
 }
 
