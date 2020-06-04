@@ -45,6 +45,7 @@ void Board::availablePlace(std::pair<int, int> source, MoveDIR direction)
 void Board::move(uint player_number, std::pair<int, int> source, MoveDIR direction)
 {
   availablePlace(source, direction);
+  //check if source place is not null
   if (!board[source.first][source.second])
   {
     throw runtime_error("There is no player");
@@ -180,6 +181,15 @@ void Board ::paramedicShoot(std::pair<int, int> source, int player)
       board[source.first][source.second - 1]->pointHealth = board[source.first][source.second - 1]->maxHelth;
     }
   }
+}
+
+void Board ::CommanderShoot()
+{
+  for (size_t i = 0; i < ; i++)
+  {
+    /* code */
+  }
+  
 }
 
 //example
