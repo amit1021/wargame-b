@@ -36,14 +36,14 @@ TEST_CASE("Sniper VS Sniper") { //good
  }
 
 TEST_CASE("Foot vs Foot") {
-    WarGame::Board board(8,8);
+   WarGame::Board board(8,8);
     CHECK(!board.has_soldiers(1));
-    board[{0,1}] = new FootSoldier(1); //soldier 1 - 100
-    CHECK(board.has_soldiers(1));
+   board[{0,1}] = new FootSoldier(1); //soldier 1 - 100
+   CHECK(board.has_soldiers(1));
 
-    CHECK(!board.has_soldiers(2));
+   CHECK(!board.has_soldiers(2));
 	board[{7,1}] = new FootSoldier(2); //soldier 2 - 100
-    CHECK(board.has_soldiers(2));
+   CHECK(board.has_soldiers(2));
 
     board.move(1,{0,1},WarGame::Board::MoveDIR::Up); //soldier 2 - 90
     CHECK(board.has_soldiers(2));
@@ -54,8 +54,8 @@ TEST_CASE("Foot vs Foot") {
     CHECK(board.has_soldiers(2));
     CHECK(board.has_soldiers(1));
 
-  CHECK_THROWS(board.move(1,{7,1},WarGame::Board::MoveDIR::Up)); //  cant go up !!
-   CHECK_THROWS(board.move(2,{7,1},WarGame::Board::MoveDIR::Up));
+ CHECK_THROWS(board.move(1,{7,1},WarGame::Board::MoveDIR::Up)); 
+  CHECK_THROWS(board.move(2,{7,1},WarGame::Board::MoveDIR::Up));
    board.move(2,{7,1},WarGame::Board::MoveDIR::Down); //soldier 1 - 90
    CHECK(board.has_soldiers(2));
     CHECK(board.has_soldiers(1));

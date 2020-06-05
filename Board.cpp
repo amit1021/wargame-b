@@ -247,13 +247,13 @@ void Board ::shootCommander(std::pair<int, int> source, int player, std::string 
 //   board[{2, 1}] = new Sniper(2);        //soldier 1 - 100
 //   board[{2, 2}] = new SniperCommander(2);
 
-//   board.move(1, {0, 0}, WarGame::Board::MoveDIR::Up); //sodier 1 - 80
+//    board.move(1, {0, 0}, WarGame::Board::MoveDIR::Up); //sodier 1 - 80
 
-  //   board[{0, 2}] = new Paramedic(1);   //soldier 1 - 100
-  //   board[{2, 0}] = new FootSoldier(2); //soldier 1 - 100
-  //   board[{2, 2}] = new Paramedic(2);   //soldier 1 - 100
-  //  board.move(1, {8, 2}, WarGame::Board::MoveDIR::Down); //sodier 1 - 80
-  //   board.move(2, {2, 2}, WarGame::Board::MoveDIR::Left); //sodier 1 - 80
-  //   board.move(2, {2, 0}, WarGame::Board::MoveDIR::Down); //sodier 1 - 80
-  //   board.move(1, {0, 2}, WarGame::Board::MoveDIR::Up);   //sodier 1 - 80
-//}
+//   //   board[{0, 2}] = new Paramedic(1);   //soldier 1 - 100
+//   //   board[{2, 0}] = new FootSoldier(2); //soldier 1 - 100
+//   //   board[{2, 2}] = new Paramedic(2);   //soldier 1 - 100
+//   //  board.move(1, {8, 2}, WarGame::Board::MoveDIR::Down); //sodier 1 - 80
+//   //   board.move(2, {2, 2}, WarGame::Board::MoveDIR::Left); //sodier 1 - 80
+//   //   board.move(2, {2, 0}, WarGame::Board::MoveDIR::Down); //sodier 1 - 80
+//   //   board.move(1, {0, 2}, WarGame::Board::MoveDIR::Up);   //sodier 1 - 80
+// }
