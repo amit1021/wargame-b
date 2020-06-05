@@ -4,6 +4,7 @@
 #include "FootCommander.hpp"
 #include "Sniper.hpp"
 #include "Paramedic.hpp"
+#include "SniperCommander.hpp"
 // #include <cstdlib>
 
 using namespace std;
@@ -146,6 +147,18 @@ void Board ::shoot(std::pair<int, int> source, int player)
     Soldier *target = &Board::getTarget(source.first, source.second, player);
     target->setH(target->pointHealth - board[source.first][source.second]->pointDamage);
   }
+  if (typeid(*board[source.first][source.second]).name() == typeid(FootCommander).name())
+  {
+    CommanderShoot(player, "Foot");
+  }
+  else if (typeid(*board[source.first][source.second]).name() == typeid(SniperCommander).name())
+  {
+    CommanderShoot(player, "Sniper");
+  }
+  else
+  {
+    CommanderShoot(player, "Paramedic");
+  }
 }
 
 void Board ::paramedicShoot(std::pair<int, int> source, int player)
@@ -183,13 +196,46 @@ void Board ::paramedicShoot(std::pair<int, int> source, int player)
   }
 }
 
-void Board ::CommanderShoot()
+void Board ::CommanderShoot(int player, string type)
 {
-  for (size_t i = 0; i < ; i++)
+  for (size_t i = 0; i < board.size(); i++)
   {
-    /* code */
+    for (size_t j = 0; j < board.size(); j++)
+    {
+      if (board[i][j] && type == "Foot")
+      {
+        // if (typeid(*board[source.first][source.second]).name() == typeid(Paramedic).name())
+
+        if ((typeid(*board[i][j]).name() == typeid(FootSoldier).name()))
+        {
+          if (board[i][j]->player = player)
+          {
+            shoot({i, j}, player);
+          }
+        }
+      }
+      if (board[i][j] && type == "Sniper")
+      {
+        if (typeid(*board[i][j]).name() == typeid(Sniper).name())
+        {
+          if (board[i][j]->player = player)
+          {
+            shoot({i, j}, player);
+          }
+        }
+      }
+      else
+      {
+        if (board[i][j] && typeid(*board[i][j]).name() == typeid(Paramedic).name())
+        {
+          if (board[i][j]->player = player)
+          {
+            paramedicShoot({i, j}, player);
+          }
+        }
+      }
+    }
   }
-  
 }
 
 //example

@@ -12,7 +12,9 @@
 #include <vector>
 #include <stdexcept>
 #include "Soldier.hpp"
+#include <string>
 
+using namespace std;
 namespace WarGame
 {
 
@@ -60,6 +62,8 @@ namespace WarGame
     Soldier &getTarget(int i1, int j1, int player);
     void paramedicShoot(std::pair<int, int> source, int player);
     void shoot(std::pair<int, int> source, int player);
+    void CommanderShoot(int player, string type);
+
     ~Board()
     {
       board.clear();
