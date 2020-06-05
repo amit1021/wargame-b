@@ -290,3 +290,47 @@ void Board ::CommanderShoot(int player, string type)
 //   board.move(1, {0, 2}, WarGame::Board::MoveDIR::Up);   //sodier 1 - 80
 
 // }
+
+int main()
+{
+  WarGame::Board board(8, 8);
+  //CHECK(!board.has_soldiers(1));
+  board[{0, 1}] = new FootSoldier(1);   //player 1 footSoldier1 {0,1}
+                                        // CHECK_THROWS((board[{0,1}] = new FootSoldier(1))); //there is already soldier there
+  board[{0, 0}] = new FootCommander(1); //player 1 commanderSoldier {0,0}
+  board[{0, 2}] = new FootSoldier(1);   //player 1 footSoldier2 {0,2}
+  //CHECK(board.has_soldiers(1));         //there is no need to write this any time
+
+  //CHECK(!board.has_soldiers(2));
+  board[{7, 0}] = new FootCommander(2); //player 2 commanderSoldier {7,0}
+  board[{7, 1}] = new FootSoldier(2);   //player 2 footSoldier1 {7,1}
+  board[{7, 2}] = new FootSoldier(2);   //player 2 footSoldier2 {7,2}
+
+  //CHECK(board.has_soldiers(2));
+
+  board.move(1, {0, 1}, WarGame::Board::MoveDIR::Up); //player 2 footsoldier1 - 90
+  //CHECK(board.has_soldiers(2));
+  //CHECK(board.has_soldiers(1));
+  //CHECK_THROWS(board.move(1, {0, 1}, WarGame::Board::MoveDIR::Up)); //no soldier there
+  board.move(1, {1, 1}, WarGame::Board::MoveDIR::Up);               //player 2 footsoldier1 - 80
+  //CHECK(board.has_soldiers(2));
+  //CHECK(board.has_soldiers(1));
+
+  //CHECK_THROWS(board.move(2, {7, 0}, WarGame::Board::MoveDIR::Left)); // cant move left
+  board.move(2, {7, 0}, WarGame::Board::MoveDIR::Down);               //player 1 commanderSoldier - 130, player 1 footsoldier1 - 70,   player 1 footsoldier2 - 90,
+  //CHECK(board.has_soldiers(2));
+  //CHECK(board.has_soldiers(1));
+
+  board.move(1, {0, 0}, WarGame::Board::MoveDIR::Up); //player 2 commanderSoldier - 130, player 2 footsoldier1 - 70,   player 2 footsoldier2 - 90,
+  //CHECK(board.has_soldiers(2));
+  //CHECK(board.has_soldiers(1));
+  board.move(1, {1, 0}, WarGame::Board::MoveDIR::Down);
+  //CHECK(board.has_soldiers(2));
+  //CHECK(board.has_soldiers(1));
+  board.move(1, {0, 0}, WarGame::Board::MoveDIR::Up);
+  //CHECK(board.has_soldiers(2));
+  //CHECK(board.has_soldiers(1));
+  board.move(1, {1, 0}, WarGame::Board::MoveDIR::Down);
+  // failed
+  cout << board.has_soldiers(2) << endl;
+}
