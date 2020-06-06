@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Board.hpp"
 #include "FootSoldier.hpp"
 #include "FootCommander.hpp"
@@ -25,27 +24,28 @@ Soldier *Board ::operator[](std::pair<int, int> location) const
 // check if in the player can move to the new place
 void Board::availablePlace(std::pair<int, int> source, MoveDIR direction)
 {
+  int i = source.first, j = source.second;
   // source out of bounds
-  if ((source.first >= board.size()) || (source.first < 0) || (source.second >= board.size()) || (source.second < 0))
+  if ((i >= board.size()) || (j < 0))
   {
     throw runtime_error("source out of bounds");
   }
   switch (direction)
   {
   case MoveDIR::Up:
-    if ((source.first + 1 >= board.size()) || (board[source.first + 1][source.second] && board[source.first + 1][source.second]->pointHealth > 0))
+    if ((i + 1 >= board.size()) || ((board[i + 1][j])))
       throw runtime_error("This place in not free");
     break;
   case MoveDIR::Down:
-    if ((source.first - 1 < 0) || (board[source.first - 1][source.second] && board[source.first - 1][source.second]->pointHealth > 0))
+    if ((i - 1 < 0) || (board[i - 1][j]))
       throw runtime_error("This place in not free");
     break;
   case MoveDIR::Right:
-    if ((source.second + 1 >= board.size()) || (board[source.first][source.second + 1] && board[source.first][source.second + 1]->pointHealth > 0))
+    if ((j + 1 >= board.size()) || (board[i][j + 1]))
       throw runtime_error("This place in not free");
     break;
   case MoveDIR::Left:
-    if ((source.second - 1 < 0) || (board[source.first][source.second - 1] && board[source.first][source.second - 1]->pointHealth > 0))
+    if ((j - 1 < 0) || (board[i][j - 1]))
       throw runtime_error("This place in not free");
     break;
   }
@@ -54,46 +54,38 @@ void Board::move(uint player_number, std::pair<int, int> source, MoveDIR directi
 {
   availablePlace(source, direction);
   //check if source place is not null
-  if (!board[source.first][source.second])
+  Soldier *&currSoldier = board[source.first][source.second];
+  int i = source.first, j = source.second;
+  if (!currSoldier)
   {
     throw runtime_error("There is no player");
   }
   switch (direction)
   {
   case MoveDIR::Up:
-    if ((!board[source.first + 1][source.second]))
-    {
-      board[source.first + 1][source.second] = board[source.first][source.second];
-      board[source.first][source.second] = nullptr;
-      shoot({source.first + 1, source.second}, player_number);
-    }
+    board[i + 1][j] = currSoldier;
+    currSoldier = nullptr;
+    shoot({i + 1, j}, player_number);
     break;
+
   case MoveDIR::Down:
-    if ((!board[source.first - 1][source.second]))
-    {
-      board[source.first - 1][source.second] = board[source.first][source.second];
-      board[source.first][source.second] = nullptr;
-      shoot({source.first - 1, source.second}, player_number);
-    }
+    board[i - 1][j] = currSoldier;
+    currSoldier = nullptr;
+    shoot({i - 1, j}, player_number);
+
     break;
 
   case MoveDIR::Right:
+    board[i][j + 1] = currSoldier;
+    currSoldier = nullptr;
+    shoot({i, j + 1}, player_number);
 
-    if (!board[source.first][source.second + 1])
-    {
-      board[source.first][source.second + 1] = board[source.first][source.second];
-      board[source.first][source.second] = nullptr;
-      shoot({source.first, source.second + 1}, player_number);
-    }
     break;
 
   case MoveDIR::Left:
-    if ((!board[source.first][source.second - 1]))
-    {
-      board[source.first][source.second - 1] = board[source.first][source.second];
-      board[source.first][source.second] = nullptr;
-      shoot({source.first, source.second - 1}, player_number);
-    }
+    board[i][j - 1] = currSoldier;
+    currSoldier = nullptr;
+    shoot({i, j - 1}, player_number);
     break;
   }
   return;
@@ -107,7 +99,7 @@ bool Board::has_soldiers(int player_number) const
     for (size_t j = 0; j < board[0].size(); j++)
     {
       // check the place is not null and the player in this place has pointHelth
-      if (board[i][j] && board[i][j]->pointHealth > 0 && (board[i][j]->player == player_number))
+      if (board[i][j] && (board[i][j]->player == player_number))
       {
         return true;
       }
@@ -125,7 +117,7 @@ Soldier &Board ::getTarget(int i1, int j1, int player)
   {
     for (size_t j = 0; j < board[0].size(); j++)
     {
-      if (board[i][j] && board[i][j]->player != player && board[i][j]->pointHealth > 0)
+      if (board[i][j] && board[i][j]->player != player )
       {
         int diffI = i - i1;
         diffI = abs(diffI);
@@ -145,64 +137,72 @@ Soldier &Board ::getTarget(int i1, int j1, int player)
 
 void Board ::shoot(std::pair<int, int> source, int player)
 {
-  if (typeid(*board[source.first][source.second]).name() == typeid(Paramedic).name())
+  int i = source.first, j = source.second;
+  Soldier *&currSoldier = board[i][j];
+  if (typeid(*currSoldier).name() == typeid(Paramedic).name())
   {
     paramedicShoot(source, player);
   }
   else
   {
-    Soldier *target = &Board::getTarget(source.first, source.second, player);
+    Soldier *target = &Board::getTarget(i, j, player);
     if (target)
     {
-      target->setH(target->pointHealth - board[source.first][source.second]->pointDamage);
+      target->setH(target->pointHealth - currSoldier->pointDamage);
     }
   }
   // Commanders
-  if (typeid(*board[source.first][source.second]) == typeid(FootCommander))
+  if (typeid(*currSoldier) == typeid(FootCommander))
   {
     shootCommander(source, player, "Foot");
   }
-  else if (typeid(*board[source.first][source.second]) == typeid(SniperCommander))
+  else if (typeid(*currSoldier) == typeid(SniperCommander))
   {
     shootCommander(source, player, "Sniper");
   }
-  else if (typeid(*board[source.first][source.second]) == typeid(ParamedicCommander))
+  else if (typeid(*currSoldier) == typeid(ParamedicCommander))
   {
     shootCommander(source, player, "Paramedic");
   }
+  Soldier::setNull(board);
 }
 
 void Board ::paramedicShoot(std::pair<int, int> source, int player)
 {
+  int i = source.first, j = source.second;
   //up
-  if (source.first + 1 < board.size() && board[source.first + 1][source.second])
+  if (i - 1 >= 0 && board[i - 1][j])
   {
-    if (board[source.first + 1][source.second]->player == player && board[source.first + 1][source.second]->pointHealth > 0)
+    if (board[i + 1][j]->player == player)
     {
-      board[source.first + 1][source.second]->pointHealth = board[source.first + 1][source.second]->maxHelth;
+      Soldier *&currSoldier = board[i + 1][j];
+      currSoldier->pointHealth = currSoldier->maxHelth;
     }
   }
   //down
-  if (source.first - 1 >= 0 && board[source.first - 1][source.second])
+  if (source.first - 1 >= 0 && board[i - 1][j])
   {
-    if (board[source.first - 1][source.second]->player == player && board[source.first - 1][source.second]->pointHealth > 0)
+    if (board[i - 1][j]->player == player)
     {
-      board[source.first - 1][source.second]->pointHealth = board[source.first - 1][source.second]->maxHelth;
+      Soldier *&currSoldier = board[i + 1][j];
+      currSoldier->pointHealth = currSoldier->maxHelth;
     }
   }
   //right
-  if (source.second + 1 < board.size() && board[source.first][source.second + 1])
+  if (i + 1 < board.size() && board[i][j + 1])
   {
-    if (board[source.first][source.second + 1]->player == player && board[source.first][source.second + 1]->pointHealth > 0)
+    if (board[i][j + 1]->player == player)
     {
-      board[source.first][source.second + 1]->pointHealth = board[source.first][source.second + 1]->maxHelth;
+      Soldier *&currSoldier = board[i][j + 1];
+      currSoldier->pointHealth = currSoldier->maxHelth;
     }
   }
-  if (source.second - 1 >= 0 && board[source.first][source.second - 1])
+  if (source.second - 1 >= 0 && board[i][j - 1])
   {
-    if (board[source.first][source.second - 1]->player == player && board[source.first][source.second - 1]->pointHealth > 0)
+    if (board[i][j - 1]->player == player)
     {
-      board[source.first][source.second - 1]->pointHealth = board[source.first][source.second - 1]->maxHelth;
+      Soldier *&currSoldier = board[i][j - 1];
+      currSoldier->pointHealth = currSoldier->maxHelth;
     }
   }
 }

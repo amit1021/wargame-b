@@ -22,4 +22,17 @@ public:
     {
         pointHealth = d;
     }
+    static void setNull(std::vector<std::vector<Soldier *>> &board)
+    {
+        for (size_t i = 0; i < board.size(); i++)
+        {
+            for (size_t j = 0; j < board.size(); j++)
+            {
+                if (board[i][j] && board[i][j]->pointHealth <= 0)
+                {
+                    board[i][j] = nullptr;
+                }
+            }
+        }
+    }
 };
